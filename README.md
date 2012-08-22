@@ -22,20 +22,20 @@ cd config/recipes
 * [List of Capistrano variables](https://github.com/capistrano/capistrano/wiki/2.x-Significant-Configuration-Variables)
 
 ## First deploy
-__cap deploy:install__
+__cap deploy:install__  
 If you have a new Linux instance you can run this to hook into the install tasks in each of the recipes to install important packages and config files into your system
 > note: make sure you read the recipe files that you have loaded in `deploy.rb` because you may need to set config variables like username and path name information
 
-__cap deploy:setup__
+__cap deploy:setup__  
 This sets up your directory structure for capistrano in whatever you added to
 `set :deploy_to, "/apps/#{application}"`
 in your deploy.rb file
 
-__cap deploy:cold__
+__cap deploy:cold__  
 This is run on your first deployment or if your application is not running.
 It runs `deploy:start` on completion instead of `deploy:restart`
 
-__cap deploy__
+__cap deploy__  
 This is what will be run on each subsequent deployment
 
 ## Order of tasks for `cap deploy`
