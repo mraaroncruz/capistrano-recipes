@@ -9,6 +9,8 @@ in your project's root
 git submodule add git://github.com/pferdefleisch/capistrano-recipes config/recipes
 cd config/recipes
 ./install # this copies the deploy-example.rb file to config/deploy.rb
+cd ../..
+capify .
 ```
 
 ### in your deploy.rb
