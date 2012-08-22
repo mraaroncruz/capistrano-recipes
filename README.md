@@ -8,7 +8,10 @@ in your project's root
 ```
 git submodule add git://github.com/pferdefleisch/capistrano-recipes config/recipes
 cd config/recipes
-./install # this symlinks the deploy.rb file to root_path/config
+./install # this copies the deploy-example.rb file to config/deploy.rb
 ```
 
-remove the recipes you don't want from the `deploy.rb` file
+### in your deploy.rb
+
+* add your server information
+* remove the recipes you don't want
