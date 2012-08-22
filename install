@@ -1,0 +1,5 @@
+#!/bin/bash
+
+set -e
+
+cp $PWD/deploy-example.rb $PWD/../deploy.rb
