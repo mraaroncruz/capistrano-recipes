@@ -16,11 +16,6 @@ cd config/recipes
 * add your server information
 * remove the recipes you don't want
 
-## Other Resources
-
-* [List of all Capistrano default tasks](https://github.com/capistrano/capistrano/wiki/Capistrano-Tasks)
-* [List of Capistrano variables](https://github.com/capistrano/capistrano/wiki/2.x-Significant-Configuration-Variables)
-
 ## First deploy
 __cap deploy:install__  
 If you have a new Linux instance you can run this to hook into the install tasks in each of the recipes to install important packages and config files into your system
@@ -53,3 +48,9 @@ myapp/releases
 myapp/current -> releases/20081019001122
 myapp/shared
 ```
+
+## Other Resources
+
+* [List of all Capistrano default tasks](https://github.com/capistrano/capistrano/wiki/Capistrano-Tasks)
+* [List of Capistrano variables](https://github.com/capistrano/capistrano/wiki/2.x-Significant-Configuration-Variables)
+
