@@ -35,13 +35,24 @@ It runs `deploy:start` on completion instead of `deploy:restart`
 __cap deploy__  
 This is what will be run on each subsequent deployment
 
+## Order of tasks for `cap deploy:cold`
+> note: `deploy:create_symlink` in versions < 2.10 was called `deploy:symlink`
+
+* `deploy:update`
+  * `deploy:updated_code`
+    * `deploy:finialize_update`
+  * `deploy:create_symlink`
+* `deploy:migrate`
+* `deploy:start # empty task, user defined`
+
 ## Order of tasks for `cap deploy`
 > note: this and the next section are taken almost word for word from [RailsCasts #133](http://railscasts.com/episodes/133-capistrano-tasks)
 
-1. `deploy:update_code`
-2. `deploy:symlink_shared`
-3. `deploy:symlink`
-4. `deploy:restart`
+* `deploy:update`
+  * `deploy:update_code`
+    * `deploy:finalize_update`
+  * `deploy:create_symlink`
+* `deploy:restart # empty task, user defined`
 
 ## Directory Structure after running `cap deploy:setup`
 
