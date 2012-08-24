@@ -46,7 +46,6 @@ This is what will be run on each subsequent deployment
 * `deploy:start # empty task, user defined`
 
 ## Order of tasks for `cap deploy`
-> note: this and the next section are taken almost word for word from [RailsCasts #133](http://railscasts.com/episodes/133-capistrano-tasks)
 
 * `deploy:update`
   * `deploy:update_code`
@@ -55,6 +54,7 @@ This is what will be run on each subsequent deployment
 * `deploy:restart # empty task, user defined`
 
 ## Directory Structure after running `cap deploy:setup`
+> note: this section is taken almost word for word from [RailsCasts #133](http://railscasts.com/episodes/133-capistrano-tasks)
 
 ```
 myapp/releases
