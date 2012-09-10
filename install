@@ -2,4 +2,12 @@
 
 set -e
 
+# Move sample deploy file to config
 cp $PWD/deploy-example.rb $PWD/../deploy.rb
+
+# Create deploy folder and some dummy deploy
+# config files
+mkdir $PWD/deploy
+touch $PWD/deploy/staging.rb
+touch $PWD/deploy/workers.rb
+touch $PWD/deploy/production.rb
