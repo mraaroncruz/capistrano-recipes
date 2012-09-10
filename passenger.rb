@@ -1,6 +1,6 @@
 namespace :passenger do
-  task :start {}
-  task :stop  {}
+  task :start do end
+  task :stop  do end
   task :restart do
     run "touch #{current_path}/tmp/restart.txt"
   end

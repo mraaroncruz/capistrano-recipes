@@ -31,4 +31,12 @@ namespace :postgresql do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
   end
   after "deploy:finalize_update", "postgresql:symlink"
+
+  desc "database console"
+  task :console do
+    auth = capture "cat #{shared_path}/config/database.yml"
+    puts "PASSWORD::: #{auth.match(/password: (.*$)/).captures.first}"
+    hostname = find_servers_for_task(current_task).first
+    exec "ssh #{hostname} -t 'source ~/.zshrc && psql -U #{application} #{postgresql_database}'"
+  end
 end
