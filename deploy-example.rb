@@ -17,7 +17,17 @@ load "config/recipes/check"
 # ...
 #
 server "8.8.8.8", :web, :app, :db, primary: true
-
+# Setup stages that then have corresponding deploy config files
+# in the config/deploy/ directory
+# ex. config/deploy/production.rb has your production env specific
+# deployment configuration. then run
+# cap production deploy
+# for that configuration or set production to default stage and run
+# cap deploy
+#
+set :stages, %w[staging workers production]
+set :default_stage, 'production'
+require "capistrano/ext/multistage"
 # Application name - to conventionalize directory/project naming
 set :application, "my_application"
 # Same as above
