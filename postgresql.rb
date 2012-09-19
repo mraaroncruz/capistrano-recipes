@@ -2,6 +2,9 @@ set_default(:postgresql_host, "localhost")
 set_default(:postgresql_user) { application }
 set_default(:postgresql_password) { Capistrano::CLI.password_prompt "PostgreSQL Password: " }
 set_default(:postgresql_database) { "#{application}_production" }
+set_default(:postgresql_dump_path) { "#{current_path}/tmp" }
+set_default(:postgresql_dump_file) { "#{application}_dump.sql" }
+set_default(:postgresql_local_dump_path) { File.expand_path("../../../tmp", __FILE__) }
 
 namespace :postgresql do
   desc "Install the latest stable release of PostgreSQL."
@@ -38,5 +41,89 @@ namespace :postgresql do
     puts "PASSWORD::: #{auth.match(/password: (.*$)/).captures.first}"
     hostname = find_servers_for_task(current_task).first
     exec "ssh #{hostname} -t 'source ~/.zshrc && psql -U #{application} #{postgresql_database}'"
+  end
+
+
+  namespace :local do
+    desc "Download remote database to tmp/"
+    task :download do
+      dumpfile = "#{postgresql_local_dump_path}/#{postgresql_dump_file}.gz"
+      get "#{postgresql_dump_path}/#{postgresql_dump_file}.gz", dumpfile
+    end
+
+    desc "Restores local database from temp file"
+    task :restore do
+      auth = YAML.load_file(File.expand_path('../../database.yml', __FILE__))
+      dev  = auth['development']
+      user, pass, database, host = dev['username'], dev['password'], dev['database'], dev['host']
+      dumpfile = "#{postgresql_local_dump_path}/#{postgresql_dump_file}"
+      system "gzip -cd #{dumpfile}.gz > #{dumpfile} && cat #{dumpfile} | psql -U #{user} -h #{host} #{database}"
+    end
+
+    desc "Dump remote database and download it locally"
+    task :localize do
+      remote.dump
+      download
+    end
+
+    desc "Dump remote database, download it locally and restore local database"
+    task :sync do
+      localize
+      restore
+    end
+  end
+
+  namespace :remote do
+    desc "Dump remote database"
+    task :dump do
+      dbyml = capture "cat #{shared_path}/config/database.yml"
+      info  = YAML.load dbyml
+      db    = info[stage.to_s]
+      user, pass, database, host = db['username'], db['password'], db['database'], db['host']
+      commands = <<-CMD
+        pg_dump -U #{user} -h #{host} #{database} | \
+        gzip > #{postgresql_dump_path}/#{postgresql_dump_file}.gz
+      CMD
+      run commands do |ch, stream, data|
+        if data =~ /Password/
+          ch.send_data("#{pass}\n")
+        end
+      end
+    end
+
+    desc "Uploads local sql.gz file to remote server"
+    task :upload do
+      dumpfile = "#{postgresql_local_dump_path}/#{postgresql_dump_file}.gz"
+      upfile   = "#{postgresql_dump_path}/#{postgresql_dump_file}.gz"
+      upload dumpfile, upfile
+    end
+
+    desc "Restores remote database"
+    task :restore do
+      dumpfile = "#{postgresql_dump_path}/#{postgresql_dump_file}"
+      gzfile   = "#{dumpfile}.gz"
+      dbyml    = capture "cat #{shared_path}/config/database.yml"
+      info     = YAML.load dbyml
+      db       = info[stage.to_s]
+      user, pass, database, host = db['username'], db['password'], db['database'], db['host']
+
+      commands = <<-CMD
+        gzip -cd #{gzfile} > #{dumpfile} && \
+        cat #{dumpfile} | \
+        psql -U #{user} -h #{host} #{database}
+      CMD
+
+      run commands do |ch, stream, data|
+        if data =~ /Password/
+          ch.send_data("#{pass}\n")
+        end
+      end
+    end
+
+    desc "Uploads and restores remote database"
+    task :sync do
+      upload
+      restore
+    end
   end
 end
