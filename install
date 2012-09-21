@@ -1,13 +1,12 @@
 #!/bin/bash
-
 set -e
 
+CFG=$PWD/..
 # Move sample deploy file to config
-cp $PWD/deploy-example.rb $PWD/../deploy.rb
-
+cp $PWD/deploy-example.rb $CFG/deploy.rb
 # Create deploy folder and some dummy deploy
 # config files
-mkdir $PWD/deploy
-touch $PWD/deploy/staging.rb
-touch $PWD/deploy/workers.rb
-touch $PWD/deploy/production.rb
+mkdir $CFG/deploy
+touch $CFG/deploy/staging.rb
+touch $CFG/deploy/workers.rb
+touch $CFG/deploy/production.rb
