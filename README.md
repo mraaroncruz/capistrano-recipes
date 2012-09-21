@@ -53,6 +53,8 @@ This is what will be run on each subsequent deployment
   * `deploy:create_symlink`
 * `deploy:restart # empty task, user defined`
 
+> This [article](https://makandracards.com/makandra/1176-which-capistrano-hooks-to-use-for-events-to-happen-on-both-cap-deploy-and-cap-deploy-migrations) is also helpful about task order
+
 ## Directory Structure after running `cap deploy:setup`
 > note: this section is taken almost word for word from [RailsCasts #133](http://railscasts.com/episodes/133-capistrano-tasks)
 
