@@ -82,7 +82,7 @@ namespace :postgresql do
       user, pass, database, host = db['username'], db['password'], db['database'], db['host']
       commands = <<-CMD
         pg_dump -U #{user} -h #{host} #{database} | \
-        gzip > #{postgresql_dump_path}/#{postgresql_dump_file}2.gz
+        gzip > #{postgresql_dump_path}/#{postgresql_dump_file}.gz
       CMD
       run commands do |ch, stream, data|
         if data =~ /Password/
