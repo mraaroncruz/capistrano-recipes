@@ -3,12 +3,18 @@ require "bundler/capistrano"
 
 # Require the recipes you need, comment out the ones you don't
 load "config/recipes/base"
-load "config/recipes/nginx"
-load "config/recipes/unicorn"
-load "config/recipes/postgresql"
-load "config/recipes/nodejs"
-load "config/recipes/rbenv"
 load "config/recipes/check"
+#load "config/recipes/assets"
+#load "config/recipes/carrierwave"
+#load "config/recipes/logs"
+#load "config/recipes/passenger"
+#load "config/recipes/postgresql"
+#load "config/recipes/pry"
+#load "config/recipes/nginx"
+#load "config/recipes/nodejs"
+#load "config/recipes/rbenv"
+#load "config/recipes/resque"
+#load "config/recipes/unicorn"
 
 # Your remote server. If you have separate db, app,
 # and web servers, you can split this up into
