@@ -4,7 +4,7 @@ require "bundler/capistrano"
 # Require the recipes you need, comment out the ones you don't
 load "config/recipes/base"
 load "config/recipes/check"
-#load "config/recipes/assets"
+#load "config/recipes/asset_pipeline"
 #load "config/recipes/carrierwave"
 #load "config/recipes/logs"
 #load "config/recipes/passenger"
