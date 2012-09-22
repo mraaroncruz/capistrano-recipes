@@ -10,7 +10,7 @@ namespace :resque do
   end
 
   desc "Quit running workers"
-  task :stop do
+  task :stop, on_error: :continue do
     run "cd #{current_path} && RAILS_ENV=production bundle exec rake resque:stop"
   end
 
