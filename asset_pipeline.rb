@@ -17,10 +17,6 @@ namespace :assets do
     system "bundle exec rake assets:clean"
   end
 
-  task :update, role: :app do
-    rsync
-    clean
-  end
-
-  after "deploy:update", 'assets:update'
+  after "deploy:update", 'assets:rsync'
+  after "deploy:cleanup", "assets:clean"
 end
