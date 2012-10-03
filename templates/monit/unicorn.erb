@@ -1,6 +1,7 @@
 check process <%= application %>_unicorn with pidfile <%= unicorn_pid %>
   start program = "/etc/init.d/unicorn_<%= application %> start"
   stop program = "/etc/init.d/unicorn_<%= application %> stop"
+  every 4 cycles
 
 <% unicorn_workers.times do |n| %>
   <% pid = unicorn_pid.sub(".pid", ".#{n}.pid") %>
@@ -12,4 +13,5 @@ check process <%= application %>_unicorn with pidfile <%= unicorn_pid %>
     if 5 restarts within 5 cycles then timeout
     alert aaron@aaroncruz.com only on { pid }
     if changed pid 2 times within 60 cycles then alert
+    every 4 cycles
 <% end %>
