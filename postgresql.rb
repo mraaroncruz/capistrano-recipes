@@ -5,6 +5,7 @@ set_default(:postgresql_database) { "#{application}_production" }
 set_default(:postgresql_dump_path) { "#{current_path}/tmp" }
 set_default(:postgresql_dump_file) { "#{application}_dump.sql" }
 set_default(:postgresql_local_dump_path) { File.expand_path("../../../tmp", __FILE__) }
+set_default(:postgresql_pid) { "/var/run/postgresql/9.1-main.pid" }
 
 namespace :postgresql do
   desc "Install the latest stable release of PostgreSQL."
