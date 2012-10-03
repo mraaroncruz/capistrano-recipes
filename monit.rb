@@ -7,6 +7,7 @@ namespace :monit do
 
   desc "Setup all Monit configuration"
   task :setup do
+    monit_config "monitrc", "/etc/monit/monitrc"
     nginx
     postgresql
     unicorn
