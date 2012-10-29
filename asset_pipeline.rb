@@ -1,7 +1,11 @@
 namespace :assets do
 
   task :precompile, role: :app  do
-    system "bundle exec rake assets:precompile"
+    if File.directory? File.expand_path('../../../public/assets', __FILE__)
+      puts "USING PREVIOUSLY COMPILED ASSETS"
+    else
+      system "bundle exec rake assets:precompile"
+    end
   end
 
   before "deploy:update", "assets:precompile"
