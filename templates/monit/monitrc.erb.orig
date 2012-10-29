@@ -1,4 +1,8 @@
+<<<<<<< HEAD
+set daemon 5
+=======
 set daemon 30
+>>>>>>> origin/master
 
 set logfile /var/log/monit.log
 set idfile /var/lib/monit/id
@@ -22,6 +26,9 @@ check system mvp
   if loadavg(5min) > 2 for 2 cycles then alert
   if memory > 75% for 2 cycles then alert
   if cpu(user) > 75% for 2 cycles then alert
+<<<<<<< HEAD
   every 6 cycles
+=======
+>>>>>>> origin/master
 
 include /etc/monit/conf.d/*
