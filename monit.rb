@@ -29,7 +29,7 @@ namespace :monit do
 end
 
 def monit_config(name, destination = nil)
-  destination ||= "/etc/monit/conf.d/#{name}.conf"
+  destination ||= "/etc/monit/conf.d/#{name}_#{application}.conf"
   template "monit/#{name}.erb", "/tmp/monit_#{name}"
   run "#{sudo} mv /tmp/monit_#{name} #{destination}"
   run "#{sudo} chown root #{destination}"
