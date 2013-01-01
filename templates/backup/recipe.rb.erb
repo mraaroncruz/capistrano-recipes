@@ -5,7 +5,7 @@
 #
 # $ backup perform -t bluesky_backup [-c <path_to_configuration_file>]
 #
-Backup::Model.new(:bluesky, 'Backup bluesky') do
+Backup::Model.new(:<%= application %>, 'Backup for <%= application %>') do
   root     = '<%= current_path %>'
   auth     = YAML.load_file("#{root}/config/backup.yml")
   db_attrs = YAML.load_file("#{root}/config/database.yml")
@@ -64,7 +64,7 @@ Backup::Model.new(:bluesky, 'Backup bluesky') do
 
     rsync.directories do |directory|
       <% backup_rsync_push_directories.each do |dir| %>
-        directory.add dir
+        directory.add '<%= dir %>'
       <% end %>
     end
   end
