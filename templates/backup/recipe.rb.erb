@@ -69,4 +69,14 @@ Backup::Model.new(:<%= application %>, 'Backup for <%= application %>') do
     end
   end
 
+  encrypt_with OpenSSL do |encryption|
+    encryption.password = auth["crypt"]["password"]
+    encryption.base64   = true
+    encryption.salt     = true
+  end
+
+  compress_with Gzip do |compression|
+    compression.level = 6
+  end
+
 end
