@@ -1,0 +1,72 @@
+# encoding: utf-8
+##
+# Backup Generated: bluesky_backup
+# Once configured, you can run the backup with the following command:
+#
+# $ backup perform -t bluesky_backup [-c <path_to_configuration_file>]
+#
+Backup::Model.new(:bluesky, 'Backup bluesky') do
+  root     = '<%= current_path %>'
+  auth     = YAML.load_file("#{root}/config/backup.yml")
+  db_attrs = YAML.load_file("#{root}/config/database.yml")
+
+  ##
+  # Split [Splitter]
+  #
+  # Split the backup file in to chunks of 250 megabytes
+  # if the backup file size exceeds 250 megabytes
+  #
+  split_into_chunks_of 250
+
+  ##
+  # PostgreSQL [Database]
+  #
+  database = db_attrs[(ENV['RAILS_ENV'] || "production")]
+
+  database PostgreSQL do |db|
+    db.name               = database["database"]
+    db.username           = database["username"]
+    db.password           = database["password"]
+    db.host               = database["host"]
+    db.port               = 5432
+    db.socket             = "<%= backup_postgres_socket_path %>"
+    db.additional_options = ["-E=utf8", "-F c"]
+    #db.skip_tables        = ["skip", "these", "tables"]
+    #db.only_tables        = ["only", "these" "tables"]
+    # Optional: Use to set the location of this utility
+    #   if it cannot be found by name in your $PATH
+    # db.pg_dump_utility = "/opt/local/bin/pg_dump"
+  end
+
+  #archive :shared_files do |archive|
+    #archive.add "#{root}/public/system"
+  #end
+
+  backup = auth["backup_server"]
+
+  store_with RSync do |rsync|
+    rsync.ip       = backup["host"]
+    rsync.username = backup["user"]
+    rsync.password = nil
+    rsync.port     = 22
+    rsync.path     = backup["path"]
+    rsync.local    = false # true if you want to store locally
+  end
+
+  sync_with RSync::Push do |rsync|
+    rsync.ip       = backup["host"]
+    rsync.username = backup["user"]
+    rsync.password = nil
+    rsync.port     = 22
+    rsync.path     = backup["path"]
+    rsync.mirror   = true
+    rsync.compress = true
+
+    rsync.directories do |directory|
+      <% backup_rsync_push_directories.each do |dir| %>
+        directory.add dir
+      <% end %>
+    end
+  end
+
+end
