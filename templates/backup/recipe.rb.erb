@@ -5,10 +5,15 @@
 #
 # $ backup perform -t bluesky_backup [-c <path_to_configuration_file>]
 #
-Backup::Model.new(:<%= application %>, 'Backup for <%= application %>') do
-  root     = '<%= current_path %>'
-  auth     = YAML.load_file("#{root}/config/backup.yml")
-  db_attrs = YAML.load_file("#{root}/config/database.yml")
+
+# Default file paths
+root     = '<%= current_path %>'
+auth     = YAML.load_file("#{root}/config/backup.yml")
+db_attrs = YAML.load_file("#{root}/config/database.yml")
+backup   = auth["backup_server"]
+database = db_attrs[(ENV['RAILS_ENV'] || "production")]
+
+Backup::Model.new(:<%= application %>_daily, 'Daily backup for <%= application %>') do
 
   ##
   # Split [Splitter]
@@ -21,7 +26,6 @@ Backup::Model.new(:<%= application %>, 'Backup for <%= application %>') do
   ##
   # PostgreSQL [Database]
   #
-  database = db_attrs[(ENV['RAILS_ENV'] || "production")]
 
   database PostgreSQL do |db|
     db.name               = database["database"]
@@ -38,19 +42,64 @@ Backup::Model.new(:<%= application %>, 'Backup for <%= application %>') do
     # db.pg_dump_utility = "/opt/local/bin/pg_dump"
   end
 
-  #archive :shared_files do |archive|
-    #archive.add "#{root}/public/system"
-  #end
+  archive :folders do |archive|¬
+    <% backup_archive_daily_folders.each do |folder| %>
+      archive.add '<%= folder %>'¬
+    <% end %>
+  end¬
 
-  backup = auth["backup_server"]
 
-  store_with RSync do |rsync|
-    rsync.ip       = backup["host"]
-    rsync.username = backup["user"]
-    rsync.password = nil
-    rsync.port     = 22
-    rsync.path     = backup["path"]
-    rsync.local    = false # true if you want to store locally
+  store_with SFTP do |sftp|
+    sftp.ip       = backup["host"]
+    sftp.username = backup["user"]
+    sftp.path     = backup["path"]
+    sftp.password = nil
+    sftp.port     = 22
+    sftp.keep     = 12
+  end
+
+  encrypt_with OpenSSL do |encryption|
+    encryption.password = auth["crypt"]["password"]
+    encryption.base64   = true
+    encryption.salt     = true
+  end
+
+  compress_with Gzip do |compression|
+    compression.level = 6
+  end
+
+end
+
+Backup::Model.new(:<%= application %>_weekly, 'Weelky backup for <%= application %>') do
+
+  database PostgreSQL do |db|
+    db.name               = database["database"]
+    db.username           = database["username"]
+    db.password           = database["password"]
+    db.host               = database["host"]
+    db.port               = 5432
+    db.socket             = "<%= backup_postgres_socket_path %>"
+    db.additional_options = ["-E=utf8", "-F c"]
+    #db.skip_tables        = ["skip", "these", "tables"]
+    #db.only_tables        = ["only", "these" "tables"]
+    # Optional: Use to set the location of this utility
+    #   if it cannot be found by name in your $PATH
+    # db.pg_dump_utility = "/opt/local/bin/pg_dump"
+  end
+
+  archive :folders do |archive|¬
+    <% backup_archive_weekly_folders.each do |folder| %>
+      archive.add '<%= folder %>'¬
+    <% end %>
+  end¬
+
+  store_with SFTP do |sftp|
+    sftp.ip       = backup["host"]
+    sftp.username = backup["user"]
+    sftp.path     = backup["path"]
+    sftp.password = nil
+    sftp.port     = 22
+    sftp.keep     = 12
   end
 
   sync_with RSync::Push do |rsync|
@@ -78,5 +127,4 @@ Backup::Model.new(:<%= application %>, 'Backup for <%= application %>') do
   compress_with Gzip do |compression|
     compression.level = 6
   end
-
 end
