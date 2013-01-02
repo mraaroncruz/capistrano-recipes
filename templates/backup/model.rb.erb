@@ -52,7 +52,7 @@ Backup::Model.new(:<%= application %>_daily, 'Daily backup for <%= application %
   store_with SFTP do |sftp|
     sftp.ip       = backup["host"]
     sftp.username = backup["user"]
-    sftp.path     = backup["path"]
+    sftp.path     = "#{backup["path"]}/<%= application %>_daily"
     sftp.password = nil
     sftp.port     = 22
     sftp.keep     = 12
@@ -96,7 +96,7 @@ Backup::Model.new(:<%= application %>_weekly, 'Weelky backup for <%= application
   store_with SFTP do |sftp|
     sftp.ip       = backup["host"]
     sftp.username = backup["user"]
-    sftp.path     = backup["path"]
+    sftp.path     = "#{backup["path"]}/<%= application %>_weekly"
     sftp.password = nil
     sftp.port     = 22
     sftp.keep     = 12
@@ -107,7 +107,7 @@ Backup::Model.new(:<%= application %>_weekly, 'Weelky backup for <%= application
     rsync.username = backup["user"]
     rsync.password = nil
     rsync.port     = 22
-    rsync.path     = backup["path"]
+    rsync.path     = "#{backup["path"]}/<%= application %>_weekly"
     rsync.mirror   = true
     rsync.compress = true
 

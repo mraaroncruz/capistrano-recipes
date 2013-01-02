@@ -12,7 +12,7 @@ namespace :backup do
   desc "Install the backup gem."
   task :install do
     run "mkdir #{shared_path}/config/models"
-    template "backup/recipe.rb.erb",  "#{shared_path}/config/models/backup.rb"
+    template "backup/model.rb.erb",  "#{shared_path}/config/models/backup.rb"
     template "backup/config.rb.erb",  "#{shared_path}/config/config.rb"
     template "backup/backup.yml.erb", "#{shared_path}/config/backup.yml"
   end
