@@ -40,14 +40,14 @@ __after `deploy:update`__
 
 __variables__
 
-`backup_postgres_socket_path`: `"/var/run/postgres"`..
-`backup_encryption_password`: prompts for encryption password..
-`backup_backup_server_pass`: prompts for backup server password..
-`backup_backup_server_host`: prompts for backup server's hostname..
-`backup_backup_server_user`: prompts for backu server's username..
-`backup_backup_server_path`:  prompts for path to backup to on backup server..
-`backup_rsync_push_directories`: which directories to backup with rsync - default: `["#{shared_path}/system"]`..
-`backup_archive_daily_folders`: which folders to archive - default: empty array..
+`backup_postgres_socket_path`: `"/var/run/postgres"`  
+`backup_encryption_password`: prompts for encryption password  
+`backup_backup_server_pass`: prompts for backup server password  
+`backup_backup_server_host`: prompts for backup server's hostname  
+`backup_backup_server_user`: prompts for backu server's username  
+`backup_backup_server_path`:  prompts for path to backup to on backup server  
+`backup_rsync_push_directories`: which directories to backup with rsync - default: `["#{shared_path}/system"]`  
+`backup_archive_daily_folders`: which folders to archive - default: empty array  
 `backup_archive_weekly_folders`: which folders to archive weekly - default: `["#{shared_path}/config"]`
 
 __install__
@@ -114,9 +114,11 @@ Restarts passenger after deploy
 
 ### postgresql
 
+__variables__
+
 `postgresql_host`: default "localhost"  
 `postgresql_user`: default the application var  
-`postgresql_password`: prompts for postgres password  
+`postgresql_password`: prompts for postgresql password  
 `postgresql_database`: default `"#{application}_production"`  
 `postgresql_dump_path`: default `"#{current_path}/tmp"`  
 `postgresql_dump_file`: default `"#{application}_dump.sql"`  
