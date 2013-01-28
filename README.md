@@ -21,19 +21,21 @@ capify .
 
 ## Recipes
 
+I have marked tasks that occur automatically during deployment when requiring the recipe in `config/deploy.rb` with *[automatic]*
+
 ### asset_pipeline
 
 __before__
 
-precompiles your Rails assets locally
+*[automatic]* precompiles your Rails assets locally
 
 __after `deploy:update`__
 
-rsyncs them to the server after `deploy:update` hook
+*[automatic]* rsyncs them to the server after `deploy:update` hook
 
 `deploy:clean`
 
-removes your local `public/assets` folder after deployment
+*[automatic]* removes your local `public/assets` folder after deployment
 
 ### backup
 
@@ -43,15 +45,15 @@ Installs backup gem config files
 
 __symlink__
 
-symlinks backup.yml file from `shared/config/backup.yml` to `current/config/backup.yml`
+*[automatic]* symlinks backup.yml file from `shared/config/backup.yml` to `current/config/backup.yml`
 
 ### bundler
 
-I have had to hack my way around bundler installs on my server before. I am now comfortable using `require "bundler/capistrano"` in the deploy.rb file but this is still here for special cases
+*[automatic]* I have had to hack my way around bundler installs on my server before. I am now comfortable using `require "bundler/capistrano"` in the deploy.rb file but this is still here for special cases
 
 ### carrierwave
 
-This simply symlinks your `shared/uploads` path to `public/uploads` 
+*[automatic]* This simply symlinks your `shared/uploads` path to `public/uploads` 
 
 ### logrotate
 
@@ -74,6 +76,123 @@ Currently supports `nginx`, `postgresql` and `unicorn`
 __setup__
 
 Installs `monitrc`. You may need to tweak the `set daemon 30` setting, this is how often monit runs its checks.
+
+### nginx
+
+__install__
+
+installs nginx from apt nginx/stable repository
+
+__setup__
+
+sets up unicorn `sites_enabled` config file or app
+
+__controls__
+
+*[automatic]* `start`, `stop`, `restart`
+
+### nodejs
+
+__install__
+
+Installs nodejs on remote server from `ppa:chris-lea/node.js` apt repo. This makes memory hungry `therubyracer` unnecessary. Plus you can now run unbelievably fast and fun to write nodejs utilities on your server :P
+
+### passenger
+
+Restarts passenger after deploy
+
+### postgresql
+
+__install__
+
+Install postgresql apt package on remote server
+
+__create_database__
+
+Prompts for password and creates production database.  
+Run before `postgresql:setup` in `deploy:setup` hook.
+
+__setup__
+
+creates database.yml based on `postgresql:create_database` settings.  
+Run after `postgresql:create_database` in `deploy:setup` hook.
+
+__console__
+
+Opens an interactive postgresql database console connected to remote server
+
+__local:download__
+
+Download remote database to local `tmp/`
+
+__local:restore__
+
+Restores local database from temp file
+
+__local:localize__
+
+Dump remote database and download it locally  
+runs `remote:dump` then `local:download`
+
+__local:sync__
+
+Dump remote database, download it locally and restore local database.  
+runs `local:localize` then `local:restore`
+
+__remote:dump__
+
+Dump remote database
+
+__remote:upload__
+
+Uploads local sql.gz file to remote server
+
+__remote:restore__
+
+Restore remote database
+
+__remote:sync__
+
+Uploads and restores remote database.  
+runs `remote:upload` then `remote:restore`
+
+### pry
+
+__console__
+
+Opens an interactive rails console with the remote server using `pry` (`pry` must be installed in your rails application or `irb` will be used)
+
+### rails_config
+
+*[automatic]* Symlinks rails_config config files from `shared` to `current`
+
+### rbenv
+
+__install__
+
+Installs `rbenv` and the `bundler` gem
+
+
+### resque *requires Rakefile tasks moved into project*
+
+*[automatic]* controls `stop`, `start` and `restart`
+
+### unicorn
+
+__setup__
+
+creates unicorn config file and moves it into `shared/config/unicorn.rb`  
+creates unicorn `init.d` control script  
+adds control script as startup script (update-rc.d)
+
+__tail__
+
+tails remote server `current/log/unicorn.log` file
+
+__controls__
+
+*[automatic]* `start`, `stop` and `restart`
+
 
 # Other Info
 
