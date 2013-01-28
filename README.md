@@ -282,3 +282,5 @@ myapp/shared
 * [List of all Capistrano default tasks](https://github.com/capistrano/capistrano/wiki/Capistrano-Tasks)
 * [List of Capistrano variables](https://github.com/capistrano/capistrano/wiki/2.x-Significant-Configuration-Variables)
 
+## Copyright
+Copyright © 2012-2013 Square Bracket eU, Aaron Cruz. See LICENSE.txt for details.
