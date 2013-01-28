@@ -40,15 +40,15 @@ __after `deploy:update`__
 
 __variables__
 
-backup_postgres_socket_path, "/var/run/postgres")..
-backup_encryption_password: prompts for encryption password..
-backup_backup_server_pass: prompts for backup server password..
-backup_backup_server_host: prompts for backup server's hostname..
-backup_backup_server_user: prompts for backu server's username..
-backup_backup_server_path:  prompts for path to backup to on backup server..
-backup_rsync_push_directories: which directories to backup with rsync - default: ["#{shared_path}/system"]..
-backup_archive_daily_folders: which folders to archive - default: empty array..
-backup_archive_weekly_folders: which folders to archive weekly - default: ["#{shared_path}/config"]
+`backup_postgres_socket_path`: `"/var/run/postgres"`..
+`backup_encryption_password`: prompts for encryption password..
+`backup_backup_server_pass`: prompts for backup server password..
+`backup_backup_server_host`: prompts for backup server's hostname..
+`backup_backup_server_user`: prompts for backu server's username..
+`backup_backup_server_path`:  prompts for path to backup to on backup server..
+`backup_rsync_push_directories`: which directories to backup with rsync - default: `["#{shared_path}/system"]`..
+`backup_archive_daily_folders`: which folders to archive - default: empty array..
+`backup_archive_weekly_folders`: which folders to archive weekly - default: `["#{shared_path}/config"]`
 
 __install__
 
@@ -117,11 +117,11 @@ Restarts passenger after deploy
 `postgresql_host`: default "localhost"  
 `postgresql_user`: default the application var  
 `postgresql_password`: prompts for postgres password  
-`postgresql_database`: default "#{application}_production"  
-`postgresql_dump_path`: default "#{current_path}/tmp"  
-`postgresql_dump_file`: default "#{application}_dump.sql"  
-`postgresql_local_dump_path`: default File.expand_path("../../../tmp", __FILE__)  
-`postgresql_pid`: default "/var/run/postgresql/9.1-main.pid"
+`postgresql_database`: default `"#{application}_production"`  
+`postgresql_dump_path`: default `"#{current_path}/tmp"`  
+`postgresql_dump_file`: default `"#{application}_dump.sql"`  
+`postgresql_local_dump_path`: default `File.expand_path("../../../tmp", __FILE__)`  
+`postgresql_pid`: default `"/var/run/postgresql/9.1-main.pid"`
 
 __install__
 
@@ -207,9 +207,9 @@ Installs `rbenv` and the `bundler` gem
 
 __variables__
 
-`unicorn_pid`: path to your unicorn pid file - default: #{current_path}/tmp/pids/unicorn.pid  
-`unicorn_config`: path to your unicorn config file - default: "#{shared_path}/config/unicorn.rb"  
-`unicorn_log` - default: #{shared_path}/log/unicorn.log  
+`unicorn_pid`: path to your unicorn pid file - default: `#{current_path}/tmp/pids/unicorn.pid`  
+`unicorn_config`: path to your unicorn config file - default: `"#{shared_path}/config/unicorn.rb"`  
+`unicorn_log` - default: `#{shared_path}/log/unicorn.log`  
 `unicorn_workers`: number of child processes unicorn should spawn - default 1
 
 __setup__
