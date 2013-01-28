@@ -13,10 +13,69 @@ cd ../..
 capify .
 ```
 
+
 ### in your deploy.rb
 
 * add your server information
 * remove the recipes you don't want
+
+## Recipes
+
+### asset_pipeline
+
+__before__
+
+precompiles your Rails assets locally
+
+__after `deploy:update`__
+
+rsyncs them to the server after `deploy:update` hook
+
+`deploy:clean`
+
+removes your local `public/assets` folder after deployment
+
+### backup
+
+__install__
+
+Installs backup gem config files
+
+__symlink__
+
+symlinks backup.yml file from `shared/config/backup.yml` to `current/config/backup.yml`
+
+### bundler
+
+I have had to hack my way around bundler installs on my server before. I am now comfortable using `require "bundler/capistrano"` in the deploy.rb file but this is still here for special cases
+
+### carrierwave
+
+This simply symlinks your `shared/uploads` path to `public/uploads` 
+
+### logrotate
+
+Has a setup task to create a logrotate file for current application. It is pretty hard coded at the moment. The template is in `templates/logrotate.erb`. The current template is pretty robust, I suggest editing the template if you have any specific needs.
+
+### logs
+
+__tail__
+
+tail your `production.log` file. There is not currently a way to tail other log files.o
+
+__htop__
+
+If you have htop installed on your remote server, this will show you the interactive htop screen.
+
+### monit
+
+Currently supports `nginx`, `postgresql` and `unicorn`
+
+__setup__
+
+Installs `monitrc`. You may need to tweak the `set daemon 30` setting, this is how often monit runs its checks.
+
+# Other Info
 
 ## First deploy
 __cap deploy:install__  
