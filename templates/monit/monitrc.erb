@@ -22,5 +22,6 @@ check system mvp
   if loadavg(5min) > 2 for 2 cycles then alert
   if memory > 75% for 2 cycles then alert
   if cpu(user) > 75% for 2 cycles then alert
+  every 6 cycles
 
 include /etc/monit/conf.d/*

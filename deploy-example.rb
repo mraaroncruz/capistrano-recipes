@@ -17,6 +17,7 @@ load "config/recipes/check"
 #load "config/recipes/rails_config"
 #load "config/recipes/rbenv"
 #load "config/recipes/resque"
+#load "config/recipes/sidekiq"
 #load "config/recipes/unicorn"
 
 # Your remote server. If you have separate db, app,
