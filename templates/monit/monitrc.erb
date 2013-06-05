@@ -9,14 +9,14 @@ set eventqueue
     slots 100
 
  set mailserver smtp.gmail.com port 587
-     username "squarebracketeu@gmail.com" password "xS0Ckeopsqd7VZjjlIXHozflybOeG"
+     username "example@gmail.com" password "gmail_password"
      using tlsv1
      with timeout 30 seconds
 
-set alert aaron@aaroncruz.com
+set alert admin@example.com
 
 set httpd port 2812
-    allow aaron:"urHscj7hpaIkOUkOGGMosmupv3wBr"
+    allow htpasswd_username:"my_htpasswd_admin_password"
 
 check system mvp
   if loadavg(5min) > 2 for 2 cycles then alert
