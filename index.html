@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Capistrano Recipes by pferdefleisch</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Capistrano Recipes</h1>
+          <h2>Clone and deploy. Deployment made incredibly simple with capistrano. Recipes for many popular infrastructure gems.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/pferdefleisch/capistrano-recipes/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/pferdefleisch/capistrano-recipes/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/pferdefleisch/capistrano-recipes" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h2>
+<a name="capistrano-recipes" class="anchor" href="#capistrano-recipes"><span class="octicon octicon-link"></span></a>Capistrano Recipes</h2>
+
+<p>Originally borrowed from <a href="http://railscasts.com/episodes/337-capistrano-recipes">Railscasts Episode 337</a></p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>in your project's root</p>
+
+<pre><code>git submodule add git://github.com/pferdefleisch/capistrano-recipes config/recipes
+cd config/recipes
+./install # this copies the deploy-example.rb file to config/deploy.rb
+cd ../..
+capify .
+</code></pre>
+
+<h3>
+<a name="in-your-deployrb" class="anchor" href="#in-your-deployrb"><span class="octicon octicon-link"></span></a>in your deploy.rb</h3>
+
+<ul>
+<li>add your server information</li>
+<li>remove the recipes you don't want</li>
+</ul><h2>
+<a name="recipes" class="anchor" href="#recipes"><span class="octicon octicon-link"></span></a>Recipes</h2>
+
+<p>I have marked tasks that occur automatically during deployment when requiring the recipe in <code>config/deploy.rb</code> with <em>[automatic]</em></p>
+
+<h3>
+<a name="asset_pipeline" class="anchor" href="#asset_pipeline"><span class="octicon octicon-link"></span></a>asset_pipeline</h3>
+
+<p><strong>before</strong></p>
+
+<p><em>[automatic]</em> precompiles your Rails assets locally</p>
+
+<p><strong>after <code>deploy:update</code></strong></p>
+
+<p><em>[automatic]</em> rsyncs them to the server after <code>deploy:update</code> hook</p>
+
+<p><code>deploy:clean</code></p>
+
+<p><em>[automatic]</em> removes your local <code>public/assets</code> folder after deployment</p>
+
+<h3>
+<a name="backup" class="anchor" href="#backup"><span class="octicon octicon-link"></span></a>backup</h3>
+
+<p><strong>variables</strong></p>
+
+<p><code>backup_postgres_socket_path</code>: <code>"/var/run/postgres"</code><br><code>backup_encryption_password</code>: prompts for encryption password<br><code>backup_backup_server_pass</code>: prompts for backup server password<br><code>backup_backup_server_host</code>: prompts for backup server's hostname<br><code>backup_backup_server_user</code>: prompts for backu server's username<br><code>backup_backup_server_path</code>:  prompts for path to backup to on backup server<br><code>backup_rsync_push_directories</code>: which directories to backup with rsync - default: <code>["#{shared_path}/system"]</code><br><code>backup_archive_daily_folders</code>: which folders to archive - default: empty array<br><code>backup_archive_weekly_folders</code>: which folders to archive weekly - default: <code>["#{shared_path}/config"]</code></p>
+
+<p><strong>install</strong></p>
+
+<p>Installs backup gem config files</p>
+
+<p><strong>symlink</strong></p>
+
+<p><em>[automatic]</em> symlinks backup.yml file from <code>shared/config/backup.yml</code> to <code>current/config/backup.yml</code></p>
+
+<h3>
+<a name="bundler" class="anchor" href="#bundler"><span class="octicon octicon-link"></span></a>bundler</h3>
+
+<p><em>[automatic]</em> I have had to hack my way around bundler installs on my server before. I am now comfortable using <code>require "bundler/capistrano"</code> in the deploy.rb file but this is still here for special cases</p>
+
+<h3>
+<a name="carrierwave" class="anchor" href="#carrierwave"><span class="octicon octicon-link"></span></a>carrierwave</h3>
+
+<p><em>[automatic]</em> This simply symlinks your <code>shared/uploads</code> path to <code>public/uploads</code> </p>
+
+<h3>
+<a name="logrotate" class="anchor" href="#logrotate"><span class="octicon octicon-link"></span></a>logrotate</h3>
+
+<p>Has a setup task to create a logrotate file for current application. It is pretty hard coded at the moment. The template is in <code>templates/logrotate.erb</code>. The current template is pretty robust, I suggest editing the template if you have any specific needs.</p>
+
+<h3>
+<a name="logs" class="anchor" href="#logs"><span class="octicon octicon-link"></span></a>logs</h3>
+
+<p><strong>tail</strong></p>
+
+<p>tail your <code>production.log</code> file. There is not currently a way to tail other log files.o</p>
+
+<p><strong>htop</strong></p>
+
+<p>If you have htop installed on your remote server, this will show you the interactive htop screen.</p>
+
+<h3>
+<a name="monit" class="anchor" href="#monit"><span class="octicon octicon-link"></span></a>monit</h3>
+
+<p>Currently supports <code>nginx</code>, <code>postgresql</code> and <code>unicorn</code></p>
+
+<p><strong>setup</strong></p>
+
+<p>Installs <code>monitrc</code>. You may need to tweak the <code>set daemon 30</code> setting, this is how often monit runs its checks.</p>
+
+<h3>
+<a name="nginx" class="anchor" href="#nginx"><span class="octicon octicon-link"></span></a>nginx</h3>
+
+<p><strong>install</strong></p>
+
+<p>installs nginx from apt nginx/stable repository</p>
+
+<p><strong>setup</strong></p>
+
+<p>sets up unicorn <code>sites_enabled</code> config file or app</p>
+
+<p><strong>controls</strong></p>
+
+<p><em>[automatic]</em> <code>start</code>, <code>stop</code>, <code>restart</code></p>
+
+<h3>
+<a name="nodejs" class="anchor" href="#nodejs"><span class="octicon octicon-link"></span></a>nodejs</h3>
+
+<p><strong>install</strong></p>
+
+<p>Installs nodejs on remote server from <code>ppa:chris-lea/node.js</code> apt repo. This makes memory hungry <code>therubyracer</code> unnecessary. Plus you can now run unbelievably fast and fun to write nodejs utilities on your server :P</p>
+
+<h3>
+<a name="passenger" class="anchor" href="#passenger"><span class="octicon octicon-link"></span></a>passenger</h3>
+
+<p>Restarts passenger after deploy</p>
+
+<h3>
+<a name="postgresql" class="anchor" href="#postgresql"><span class="octicon octicon-link"></span></a>postgresql</h3>
+
+<p><strong>variables</strong></p>
+
+<p><code>postgresql_host</code>: default "localhost"<br><code>postgresql_user</code>: default the application var<br><code>postgresql_password</code>: prompts for postgresql password<br><code>postgresql_database</code>: default <code>"#{application}_production"</code><br><code>postgresql_dump_path</code>: default <code>"#{current_path}/tmp"</code><br><code>postgresql_dump_file</code>: default <code>"#{application}_dump.sql"</code><br><code>postgresql_local_dump_path</code>: default <code>File.expand_path("../../../tmp", __FILE__)</code><br><code>postgresql_pid</code>: default <code>"/var/run/postgresql/9.1-main.pid"</code></p>
+
+<p><strong>install</strong></p>
+
+<p>Install postgresql apt package on remote server</p>
+
+<p><strong>create_database</strong></p>
+
+<p>Prompts for password and creates production database.<br>
+Run before <code>postgresql:setup</code> in <code>deploy:setup</code> hook.</p>
+
+<p><strong>setup</strong></p>
+
+<p>creates database.yml based on <code>postgresql:create_database</code> settings.<br>
+Run after <code>postgresql:create_database</code> in <code>deploy:setup</code> hook.</p>
+
+<p><strong>console</strong></p>
+
+<p>Opens an interactive postgresql database console connected to remote server</p>
+
+<p><strong>local:download</strong></p>
+
+<p>Download remote database to local <code>tmp/</code></p>
+
+<p><strong>local:restore</strong></p>
+
+<p>Restores local database from temp file</p>
+
+<p><strong>local:localize</strong></p>
+
+<p>Dump remote database and download it locally<br>
+runs <code>remote:dump</code> then <code>local:download</code></p>
+
+<p><strong>local:sync</strong></p>
+
+<p>Dump remote database, download it locally and restore local database.<br>
+runs <code>local:localize</code> then <code>local:restore</code></p>
+
+<p><strong>remote:dump</strong></p>
+
+<p>Dump remote database</p>
+
+<p><strong>remote:upload</strong></p>
+
+<p>Uploads local sql.gz file to remote server</p>
+
+<p><strong>remote:restore</strong></p>
+
+<p>Restore remote database</p>
+
+<p><strong>remote:sync</strong></p>
+
+<p>Uploads and restores remote database.<br>
+runs <code>remote:upload</code> then <code>remote:restore</code></p>
+
+<h3>
+<a name="pry" class="anchor" href="#pry"><span class="octicon octicon-link"></span></a>pry</h3>
+
+<p><strong>console</strong></p>
+
+<p>Opens an interactive rails console with the remote server using <code>pry</code> (<code>pry</code> must be installed in your rails application or <code>irb</code> will be used)</p>
+
+<h3>
+<a name="rails_config" class="anchor" href="#rails_config"><span class="octicon octicon-link"></span></a>rails_config</h3>
+
+<p><em>[automatic]</em> Symlinks rails_config config files from <code>shared</code> to <code>current</code></p>
+
+<h3>
+<a name="rbenv" class="anchor" href="#rbenv"><span class="octicon octicon-link"></span></a>rbenv</h3>
+
+<p><strong>variables</strong>
+<code>ruby_version</code>: ruby version to install - default 1.9.3-p125<br><code>rbenv_bootstrap</code>: which ubuntu version gist to use - default: bootstrap-ubuntu-12-04</p>
+
+<p><strong>install</strong></p>
+
+<p>Installs <code>rbenv</code> and the <code>bundler</code> gem</p>
+
+<h3>
+<a name="resque" class="anchor" href="#resque"><span class="octicon octicon-link"></span></a>resque</h3>
+
+<blockquote>
+<p><em>requires Rakefile tasks moved into project</em></p>
+</blockquote>
+
+<p><em>[automatic]</em> controls <code>stop</code>, <code>start</code> and <code>restart</code></p>
+
+<h3>
+<a name="unicorn" class="anchor" href="#unicorn"><span class="octicon octicon-link"></span></a>unicorn</h3>
+
+<p><strong>variables</strong></p>
+
+<p><code>unicorn_pid</code>: path to your unicorn pid file - default: <code>#{current_path}/tmp/pids/unicorn.pid</code><br><code>unicorn_config</code>: path to your unicorn config file - default: <code>"#{shared_path}/config/unicorn.rb"</code><br><code>unicorn_log</code> - default: <code>#{shared_path}/log/unicorn.log</code><br><code>unicorn_workers</code>: number of child processes unicorn should spawn - default 1</p>
+
+<p><strong>setup</strong></p>
+
+<p>creates unicorn config file and moves it into <code>shared/config/unicorn.rb</code><br>
+creates unicorn <code>init.d</code> control script<br>
+adds control script as startup script (update-rc.d)</p>
+
+<p><strong>tail</strong></p>
+
+<p>tails remote server <code>current/log/unicorn.log</code> file</p>
+
+<p><strong>controls</strong></p>
+
+<p><em>[automatic]</em> <code>start</code>, <code>stop</code> and <code>restart</code></p>
+
+<h1>
+<a name="other-info" class="anchor" href="#other-info"><span class="octicon octicon-link"></span></a>Other Info</h1>
+
+<h2>
+<a name="first-deploy" class="anchor" href="#first-deploy"><span class="octicon octicon-link"></span></a>First deploy</h2>
+
+<p><strong>cap deploy:install</strong><br>
+If you have a new Linux instance you can run this to hook into the install tasks in each of the recipes to install important packages and config files into your system</p>
+
+<blockquote>
+<p>note: make sure you read the recipe files that you have loaded in <code>deploy.rb</code> because you may need to set config variables like username and path name information</p>
+</blockquote>
+
+<p><strong>cap deploy:setup</strong><br>
+This sets up your directory structure for capistrano in whatever you added to
+<code>set :deploy_to, "/apps/#{application}"</code>
+in your deploy.rb file</p>
+
+<p><strong>cap deploy:cold</strong><br>
+This is run on your first deployment or if your application is not running.
+It runs <code>deploy:start</code> on completion instead of <code>deploy:restart</code></p>
+
+<p><strong>cap deploy</strong><br>
+This is what will be run on each subsequent deployment</p>
+
+<h2>
+<a name="order-of-tasks-for-cap-deploycold" class="anchor" href="#order-of-tasks-for-cap-deploycold"><span class="octicon octicon-link"></span></a>Order of tasks for <code>cap deploy:cold</code>
+</h2>
+
+<blockquote>
+<p>note: <code>deploy:create_symlink</code> in versions &lt; 2.10 was called <code>deploy:symlink</code></p>
+</blockquote>
+
+<ul>
+<li>
+<code>deploy:update</code>
+
+<ul>
+<li><code>deploy:updated_code</code></li>
+<li><code>deploy:finialize_update</code></li>
+<li><code>deploy:create_symlink</code></li>
+</ul>
+</li>
+<li><code>deploy:migrate</code></li>
+<li><code>deploy:start # empty task, user defined</code></li>
+</ul><h2>
+<a name="order-of-tasks-for-cap-deploy" class="anchor" href="#order-of-tasks-for-cap-deploy"><span class="octicon octicon-link"></span></a>Order of tasks for <code>cap deploy</code>
+</h2>
+
+<ul>
+<li>
+<code>deploy:update</code>
+
+<ul>
+<li><code>deploy:update_code</code></li>
+<li><code>deploy:finalize_update</code></li>
+<li><code>deploy:create_symlink</code></li>
+</ul>
+</li>
+<li><code>deploy:restart # empty task, user defined</code></li>
+</ul><blockquote>
+<p>This <a href="https://makandracards.com/makandra/1176-which-capistrano-hooks-to-use-for-events-to-happen-on-both-cap-deploy-and-cap-deploy-migrations">article</a> is also helpful about task order</p>
+</blockquote>
+
+<h2>
+<a name="directory-structure-after-running-cap-deploysetup" class="anchor" href="#directory-structure-after-running-cap-deploysetup"><span class="octicon octicon-link"></span></a>Directory Structure after running <code>cap deploy:setup</code>
+</h2>
+
+<blockquote>
+<p>note: this section is taken almost word for word from <a href="http://railscasts.com/episodes/133-capistrano-tasks">RailsCasts #133</a></p>
+</blockquote>
+
+<pre><code>myapp/releases
+myapp/current -&gt; releases/20081019001122
+myapp/shared
+</code></pre>
+
+<h2>
+<a name="other-resources" class="anchor" href="#other-resources"><span class="octicon octicon-link"></span></a>Other Resources</h2>
+
+<ul>
+<li><a href="https://github.com/capistrano/capistrano/wiki/Capistrano-Tasks">List of all Capistrano default tasks</a></li>
+<li><a href="https://github.com/capistrano/capistrano/wiki/2.x-Significant-Configuration-Variables">List of Capistrano variables</a></li>
+</ul><h2>
+<a name="copyright" class="anchor" href="#copyright"><span class="octicon octicon-link"></span></a>Copyright</h2>
+
+<p>Copyright © 2012-2013 Square Bracket eU, Aaron Cruz. See LICENSE.txt for details.</p>
+        </section>
+
+        <footer>
+          Capistrano Recipes is maintained by <a href="https://github.com/pferdefleisch">pferdefleisch</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
